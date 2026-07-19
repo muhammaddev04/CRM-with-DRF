@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+.env
+.cache/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.pytest_cache/
+.ipynb_checkpoints/
