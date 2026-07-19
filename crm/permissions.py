@@ -44,7 +44,7 @@ class RolePermission(BasePermission):
 
 
         
-        if role == 'teacher':
+        if role == 'mentor':
 
             if request.method in [
                 'PUT',
