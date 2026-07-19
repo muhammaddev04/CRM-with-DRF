@@ -58,6 +58,8 @@ class CourseSerilaizer(serializers.ModelSerializer):
             'price',
         ]
 
+        
+
 
 class GroupSerializer(serializers.ModelSerializer):
     course=CourseSerilaizer(read_only=True)
@@ -79,6 +81,11 @@ class GroupSerializer(serializers.ModelSerializer):
             'status',
             'course_id'
         ]
+
+
+    def validate(self, attrs):
+        if attrs['start_time']>attrs['end_time']:
+            raise serializers.ValidationError('End_time must be biger than start_time')
 
 
 class StudentenrollSerializer(serializers.ModelSerializer):
@@ -106,7 +113,7 @@ class StudentenrollSerializer(serializers.ModelSerializer):
             'student_id'
         ]
 
-        def validate(self, data):
+    def validate(self, data):
             student = data['student']
             course = data['course']
 
@@ -136,6 +143,7 @@ class StudentenrollSerializer(serializers.ModelSerializer):
 
 
             return data
+        
 
 
 class MentorenrollSerializer(serializers.ModelSerializer):
