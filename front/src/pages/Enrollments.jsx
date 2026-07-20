@@ -56,6 +56,7 @@ function EnrollmentForm({ defaultValues, students, groups, onSubmit, submitLabel
           </option>
         ))}
       </Select>
+      <Input label="Start date" type="date" required error={errors.start_time?.message} {...register('start_time', { required: 'Required' })} />
       <Select label="Status" {...register('status')}>
         <option value="ACTIVE">Active</option>
         <option value="FINISHED">Finished</option>

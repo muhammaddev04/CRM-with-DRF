@@ -63,6 +63,7 @@ class CourseSerilaizer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     course=CourseSerilaizer(read_only=True)
+    mentor=MentorSerializer(read_only=True)
     course_id=serializers.PrimaryKeyRelatedField(
         queryset=Course.objects.all(),
         source='course',
@@ -85,6 +86,7 @@ class GroupSerializer(serializers.ModelSerializer):
             'branch',
             'status',
             'course_id',
+            'mentor',
             'mentor_id'
         ]
 
@@ -120,38 +122,36 @@ class StudentenrollSerializer(serializers.ModelSerializer):
             'status',
             'group_id',
             'student_id'
+            
         ]
 
     def validate(self, data):
-            student = data['student']
-            course = data['course']
-
+        student = data["student"]
+        group = data["group"]
+        
 
         
-            exists = Student_enroll.objects.filter(
-                student=student,
-                course=course
-            ).exists()
+        exists = Student_enroll.objects.filter(
+            student=student,
+            group__course=group.course
+        ).exists()
+
+        if exists:
+            raise serializers.ValidationError(
+                "Student already has this course"
+            )
+
+        active_course = Student_enroll.objects.filter(
+            student=student,
+            status="active"
+        ).first()
 
 
-            if exists:
-                raise serializers.ValidationError(
-                    "Student already has this course"
-                )
+        if active_course:
+            active_course.delete()
 
 
-        
-            active_course = Student_enroll.objects.filter(
-                student=student,
-                status="active"
-            ).first()
-
-
-            if active_course:
-                active_course.delete()
-
-
-            return data
+        return data
         
 
 
@@ -281,13 +281,26 @@ class GradeSerializer(serializers.ModelSerializer):
 
     def validate(self,data):
 
-        student=data['student']
-        course=data['course']
+        student = data["student"]
+        group = data["group"]
 
+        course = group.course
 
         enrolled = Student_enroll.objects.filter(
             student=student,
-            course=course
+            group__course=course
+        ).exists()
+
+
+        Student_enroll.objects.filter(
+            student=student,
+            group=group
+        ).exists()
+
+
+        Student_enroll.objects.filter(
+            student=student,
+            group__course=group.course
         ).exists()
 
 
@@ -298,6 +311,11 @@ class GradeSerializer(serializers.ModelSerializer):
 
 
         return data
+    
+
+    
+
+
 
 
 class GradeexamSerializer(serializers.ModelSerializer):

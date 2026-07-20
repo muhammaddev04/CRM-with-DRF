@@ -125,9 +125,17 @@ class Activity(models.Model):
     
 
 class Grade(models.Model):
+    GRADE_CHOICES=(
+        (0,0),
+        (1,1),
+        (2,2),
+        (3,3),
+        (4,4),
+        (5,5)
+    )
     student=models.ForeignKey(Student,on_delete=models.CASCADE,related_name='grade')
     group=models.ForeignKey(Group,on_delete=models.CASCADE,related_name='grades')
-    grade=models.PositiveIntegerField()
+    grade=models.CharField(max_length=10,choices=GRADE_CHOICES,default=0)
     cr_at=models.DateTimeField(auto_now_add=True)
 
 

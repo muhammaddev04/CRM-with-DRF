@@ -132,6 +132,7 @@ function GroupDetail({ group, mentors }) {
           <p className="text-xs text-slate-400">End</p>
           <p className="font-medium text-slate-700 dark:text-slate-200">{formatDate(group.end_time)}</p>
         </div>
+
       </div>
 
       <div>
@@ -278,7 +279,7 @@ export default function Groups() {
       <Modal open={!!modal} onClose={() => setModal(null)} title={modal?.mode === 'edit' ? 'Edit group' : 'Add group'}>
         {modal && (
           <GroupForm
-            defaultValues={modal.mode === 'edit' ? modal.group : { name: '', description: '', branch: '', start_time: '', end_time: '' }}
+            defaultValues={modal.mode === 'edit' ? modal.group : { name: '', description: '', branch: '', start_time: '', end_time: '',mentor:'' }}
             courses={courses}
             mentors={mentors}
             isEdit={modal.mode === 'edit'}

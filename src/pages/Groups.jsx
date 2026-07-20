@@ -13,7 +13,7 @@ import Spinner from '../components/ui/Spinner'
 import { Input, Textarea, Select } from '../components/ui/Field'
 import { formatDate, initials } from '../lib/format'
 
-function GroupForm({ defaultValues, courses, onSubmit, submitLabel }) {
+function GroupForm({ defaultValues, courses, mentors, onSubmit, submitLabel }) {
   const {
     register,
     handleSubmit,
@@ -29,7 +29,7 @@ function GroupForm({ defaultValues, courses, onSubmit, submitLabel }) {
   return (
     <form
       onSubmit={handleSubmit((values) =>
-        onSubmit({ ...values, course_id: Number(values.course_id), status: values.status === 'true' })
+        onSubmit({ ...values, course_id: Number(values.course_id), mentor_id:Number(values.mentor), status: values.status === 'true' })
       )}
       className="space-y-4"
     >
@@ -46,6 +46,20 @@ function GroupForm({ defaultValues, courses, onSubmit, submitLabel }) {
         </Select>
         <Input label="Branch" required error={errors.branch?.message} {...register('branch', { required: 'Required' })} />
       </div>
+          <Select
+            label="Mentor"
+            required
+            error={errors.mentor?.message}
+            {...register("mentor", { required: "Required" })}
+            >         
+            <option value="">Select a mentor...</option>
+
+            {mentors.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.f_name} {m.l_name}
+              </option>
+            ))}
+            </Select>
       <div className="grid grid-cols-2 gap-4">
         <Input label="Start date" type="date" required error={errors.start_time?.message} {...register('start_time', { required: 'Required' })} />
         <Input label="End date" type="date" required error={errors.end_time?.message} {...register('end_time', { required: 'Required' })} />
@@ -195,12 +209,15 @@ export default function Groups() {
             <p className="font-medium text-slate-800 dark:text-slate-100">{g.name}</p>
             <p className="text-xs text-slate-400">{g.course?.name}</p>
           </div>
+          
         </div>
       ),
     },
+    { key: 'mentor', header: 'Mentor', render: (g) => (g.mentor?.f_name)},
     { key: 'branch', header: 'Branch' },
     { key: 'dates', header: 'Duration', render: (g) => `${formatDate(g.start_time)} – ${formatDate(g.end_time)}` },
     { key: 'status', header: 'Status', render: (g) => <Badge tone={g.status ? 'success' : 'neutral'}>{g.status ? 'Active' : 'Inactive'}</Badge> },
+    // { key: 'mentor', header: 'Mentor'},
     {
       key: 'actions',
       header: '',
@@ -249,6 +266,7 @@ export default function Groups() {
           <GroupForm
             defaultValues={modal.mode === 'edit' ? modal.group : { name: '', description: '', branch: '', start_time: '', end_time: '' }}
             courses={courses}
+            mentors={mentors}
             submitLabel={modal.mode === 'edit' ? 'Save changes' : 'Create group'}
             onSubmit={async (values) => {
               try {
