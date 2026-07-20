@@ -68,6 +68,11 @@ class GroupSerializer(serializers.ModelSerializer):
         source='course',
         write_only=True
     )
+    mentor_id=serializers.PrimaryKeyRelatedField(
+        queryset=Mentor.objects.all(),
+        source='mentor',
+        write_only=True
+    )
     class Meta:
         model = Group
         fields = [
@@ -79,14 +84,18 @@ class GroupSerializer(serializers.ModelSerializer):
             'end_time',
             'branch',
             'status',
-            'course_id'
+            'course_id',
+            'mentor_id'
         ]
 
 
     def validate(self, attrs):
-        if attrs['start_time']>attrs['end_time']:
-            raise serializers.ValidationError('End_time must be biger than start_time')
+        if attrs['start_time'] > attrs['end_time']:
+            raise serializers.ValidationError(
+                'End_time must be bigger than start_time'
+            )
 
+        return attrs
 
 class StudentenrollSerializer(serializers.ModelSerializer):
     group=GroupSerializer(read_only=True)
@@ -205,7 +214,9 @@ class ActivitySerializer(serializers.ModelSerializer):
             'student',
             'timetable',
             'comment',
-            'student_id'
+            'student_id',
+            'course',
+            'weekday'
         ]
 
 
