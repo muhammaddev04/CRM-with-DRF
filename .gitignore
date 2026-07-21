@@ -1,4 +1,6 @@
 # Logs
+db.sqlite3
+.venv/
 logs
 *.log
 npm-debug.log*
@@ -22,3 +24,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+__pycache__/
+*.pyc
+
