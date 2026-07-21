@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Plus, Search, Pencil, Trash2, Mail, Phone } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Plus, Search, Pencil, Trash2, Mail, Phone, Eye } from 'lucide-react'
 import { studentsApi } from '../api/resources'
 import { useResource, withToast } from '../hooks/useResource'
 import PageHeader from '../components/ui/PageHeader'
@@ -52,6 +53,7 @@ function StudentForm({ defaultValues, onSubmit, submitLabel }) {
 }
 
 export default function Students() {
+  const navigate = useNavigate()
   const { items, loading, create, update, remove } = useResource(studentsApi)
   const [query, setQuery] = useState('')
   const [modal, setModal] = useState(null) // { mode: 'create'|'edit', student }
@@ -98,6 +100,9 @@ export default function Students() {
       header: '',
       render: (s) => (
         <div className="flex justify-end gap-1">
+          <button onClick={() => navigate(`/app/students/${s.id}`)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-brand-600 dark:hover:bg-white/10">
+            <Eye className="h-4 w-4" />
+          </button>
           <button onClick={() => setModal({ mode: 'edit', student: s })} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-brand-600 dark:hover:bg-white/10">
             <Pencil className="h-4 w-4" />
           </button>

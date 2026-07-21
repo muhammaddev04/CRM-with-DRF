@@ -15,7 +15,7 @@ class RolePermission(BasePermission):
             return True
 
         
-        if role == 'teacher':
+        if role == 'mentor':
             return request.method in [
                 'GET',
                 'POST',

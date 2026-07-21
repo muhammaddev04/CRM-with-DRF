@@ -28,9 +28,15 @@ export function AuthProvider({ children }) {
     return data
   }, [])
 
+  // SimpleJWT encodes the user_id claim as a string (e.g. "6"), while every
+  // REST API response returns numeric ids (e.g. 6). Normalize here, once, so
+  // every consumer of userId can compare it against API data with ===
+  // instead of silently failing on a type mismatch.
+  const userId = tokenPayload?.user_id != null ? Number(tokenPayload.user_id) : null
+
   const value = useMemo(
-    () => ({ isAuthenticated, login, logout, tokenPayload, userId: tokenPayload?.user_id ?? null }),
-    [isAuthenticated, login, logout, tokenPayload]
+    () => ({ isAuthenticated, login, logout, tokenPayload, userId }),
+    [isAuthenticated, login, logout, tokenPayload, userId]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -8,6 +8,7 @@ urlpatterns = [
     path('student-create/', StudentCreateView.as_view()),
     path('student-update/<int:pk>/', StudentUpdateView.as_view()),
     path('student-delete/<int:pk>/', StudentDeleteView.as_view()),
+    path('student-detail/<int:pk>/',StudentDetailView.as_view()),
 
     
     path('mentors/', MentorListView.as_view()),

@@ -164,7 +164,7 @@ export default function Timetable() {
         </div>
       ),
     },
-    { key: 'weekday', header: 'Weekday', render: (t) => weekdayLabel(t.weekday) },
+    { key: 'weekday', header: 'Weekday', render: (t) => WEEKDAYS.find(([v]) => v === t.weekday)?.[1] ?? t.weekday },
     { key: 'type', header: 'Type', render: (t) => <Badge tone={t.type === 'EXAM' ? 'danger' : 'brand'}>{t.type === 'EXAM' ? 'Exam' : 'Practice'}</Badge> },
     { key: 'dates', header: 'Window', render: (t) => `${formatDate(t.startdate)} – ${formatDate(t.enddate)}` },
     {

@@ -20,6 +20,12 @@ export const studentsApi = makeResource({
   remove: (id) => `/student-delete/${id}/`,
 })
 
+// GET /student-detail/<id>/ — StudentDetailSerializer: profile + enrollments,
+// lesson/exam grades, activities and precomputed stats in one response.
+export const studentDetailApi = {
+  get: (id) => api.get(`/student-detail/${id}/`).then((res) => res.data),
+}
+
 export const mentorsApi = makeResource({
   list: '/mentors/',
   detail: (id) => `/mentor/${id}/`,

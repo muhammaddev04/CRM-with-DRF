@@ -293,7 +293,9 @@ class GradeexamDeleteView(generics.DestroyAPIView):
     permission_classes=[IsAuthenticated,RolePermission]
 
 
-
-
+class StudentDetailView(generics.RetrieveAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentDetailSerializer
+    permission_classes=[IsAuthenticated,RolePermission]
 
 

@@ -8,6 +8,7 @@ import AppShell from './components/layout/AppShell'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Students from './pages/Students'
+import StudentDetail from './pages/StudentDetail'
 import Mentors from './pages/Mentors'
 import Courses from './pages/Courses'
 import Groups from './pages/Groups'
@@ -36,6 +37,7 @@ function AppRoutes() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="students" element={<Students />} />
+          <Route path="students/:id" element={<StudentDetail />} />
           <Route path="mentors" element={<Mentors />} />
           <Route path="courses" element={<Courses />} />
           <Route path="groups" element={<Groups />} />

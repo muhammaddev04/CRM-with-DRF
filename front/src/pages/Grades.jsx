@@ -14,14 +14,25 @@ import { Input, Select } from '../components/ui/Field'
 import RequirementNotice from '../components/ui/RequirementNotice'
 import { formatDateTime } from '../lib/format'
 
-function gradeTone(value) {
+const LESSON_GRADE_OPTIONS = [0, 1, 2, 3, 4, 5]
+
+// Lesson/class grades are a fixed 0-5 scale (crm.models.Grade.GRADE_CHOICES).
+function lessonGradeTone(value) {
+  const g = Number(value)
+  if (g >= 5) return 'success'
+  if (g >= 3) return 'warning'
+  return 'danger'
+}
+
+// Exam grades stay a free 0-100 score (crm.models.Grade_Exam) — untouched.
+function examGradeTone(value) {
   const g = Number(value)
   if (g >= 85) return 'success'
   if (g >= 60) return 'warning'
   return 'danger'
 }
 
-function GradeForm({ defaultValues, students, groups, onSubmit, submitLabel }) {
+function GradeForm({ defaultValues, students, groups, isExam, onSubmit, submitLabel }) {
   const {
     register,
     handleSubmit,
@@ -67,7 +78,18 @@ function GradeForm({ defaultValues, students, groups, onSubmit, submitLabel }) {
           </option>
         ))}
       </Select>
-      <Input label="Grade" type="number" min="0" max="100" required error={errors.grade?.message} {...register('grade', { required: 'Required' })} />
+      {isExam ? (
+        <Input label="Grade" type="number" min="0" max="100" required error={errors.grade?.message} {...register('grade', { required: 'Required' })} />
+      ) : (
+        <Select label="Grade" required error={errors.grade?.message} {...register('grade', { required: 'Required' })}>
+          <option value="">Select a grade…</option>
+          {LESSON_GRADE_OPTIONS.map((g) => (
+            <option key={g} value={g}>
+              {g}
+            </option>
+          ))}
+        </Select>
+      )}
       <div className="flex justify-end gap-3 pt-2">
         <Button type="submit" loading={isSubmitting} disabled={missing.length > 0}>
           {submitLabel}
@@ -79,7 +101,7 @@ function GradeForm({ defaultValues, students, groups, onSubmit, submitLabel }) {
 
 const TABS = [
   { key: 'grades', label: 'Coursework grades', icon: Award, api: 'grades' },
-  { key: 'exams', label: 'Exam grades', icon: ClipboardCheck, api: 'exams' },
+  { key: 'exams', label: 'Exam grades', icon: ClipboardCheck, api: 'EXAM' },
 ]
 
 export default function Grades() {
@@ -105,7 +127,16 @@ export default function Grades() {
   const columns = [
     { key: 'student', header: 'Student', render: (g) => <span className="font-medium text-slate-800 dark:text-slate-100">{g.student?.f_name} {g.student?.l_name}</span> },
     { key: 'group', header: 'Group', render: (g) => g.group?.name },
-    { key: 'grade', header: 'Score', render: (g) => <Badge tone={gradeTone(g.grade)}>{g.grade} / 100</Badge> },
+    {
+      key: 'grade',
+      header: 'Score',
+      render: (g) =>
+        tab === 'exams' ? (
+          <Badge tone={examGradeTone(g.grade)}>{g.grade} / 100</Badge>
+        ) : (
+          <Badge tone={lessonGradeTone(g.grade)}>{g.grade} / 5</Badge>
+        ),
+    },
     { key: 'cr_at', header: 'Recorded', render: (g) => formatDateTime(g.cr_at) },
     {
       key: 'actions',
@@ -169,6 +200,7 @@ export default function Grades() {
             defaultValues={modal.mode === 'edit' ? modal.grade : null}
             students={students}
             groups={groups}
+            isExam={tab === 'exams'}
             submitLabel={modal.mode === 'edit' ? 'Save changes' : 'Save grade'}
             onSubmit={async (values) => {
               try {

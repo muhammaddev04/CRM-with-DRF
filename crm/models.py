@@ -99,8 +99,8 @@ class Timetable(models.Model):
     )
 
     TYPE_CHOICE=(
-        ('PRACTICE','practice'),
-        ('EXAM','exam'),
+        ('PRACTICE','PRACTICE'),
+        ('EXAM','EXAM'),
     )
     group=models.ForeignKey(Group,on_delete=models.CASCADE,related_name='timetable')
     startdate=models.DateField()
